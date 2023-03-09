@@ -1,0 +1,69 @@
+name: Build ANTs for macOS
+
+on:
+  # Allows to run the workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build packages
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Create environment and install python packages
+      run: |
+        cd ${{github.workspace}}
+        mkdir tmp
+        cd tmp
+        python3 -m virtualenv -p python3 venv --clear
+        source venv/bin/activate
+        python3 -m pip install wheel setuptools
+        deactivate
+
+    - name: Install dependencies
+      run: |
+        cd ${{github.workspace}}
+        source tmp/venv/bin/activate
+        python3 -m pip install --upgrade pip
+        deactivate
+
+    - name: Install cmake
+      run: |
+        brew update
+        brew install cmake ninja
+        ninja --version
+        cmake --version
+
+    - name: Build ANTs
+      run: |
+        cd ${{github.workspace}}
+        mkdir ANTs
+        cd ANTs
+        git clone https://github.com/ANTsX/ANTs.git source
+        mkdir build
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install ../source
+        make -j4
+        cd ANTS-build
+        make install
+        cp -R ${{github.workspace}}/ANTs/source/Scripts ${{github.workspace}}/ANTs/install/
+
+    - name: Pack
+      shell: bash
+      working-directory: ${{github.workspace}}
+      run: |
+        cd ANTs/install/
+        zip -r ${{github.workspace}}/ANTs/ANTs_package_macos.zip .
+
+    - name: Upload package
+      uses: actions/upload-artifact@v2
+      with:
+        name: Package
+        path: ${{github.workspace}}/ANTs/ANTs*
+        if-no-files-found: error
+
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -rf ${{github.workspace}}/ANTs/
