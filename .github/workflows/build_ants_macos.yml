@@ -11,23 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Create environment and install python packages
-      run: |
-        cd ${{github.workspace}}
-        mkdir tmp
-        cd tmp
-        python3 -m virtualenv -p python3 venv --clear
-        source venv/bin/activate
-        python3 -m pip install wheel setuptools
-        deactivate
-
-    - name: Install dependencies
-      run: |
-        cd ${{github.workspace}}
-        source tmp/venv/bin/activate
-        python3 -m pip install --upgrade pip
-        deactivate
-
     - name: Install cmake
       run: |
         brew update
