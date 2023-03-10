@@ -20,39 +20,41 @@ jobs:
           vsversion: "2019"
 
       - name: Configure ANTs
+        working-directory: ${{runner.temp}}
         run: |
-          cd ${{github.workspace}}
-          mkdir ANTs
-          cd ANTs
           git clone https://github.com/ANTsX/ANTs.git source
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install ../source
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.temp}}/install ../source
 
       - name: Build ANTs
-        working-directory: ${{github.workspace}}
+        working-directory: ${{runner.temp}}
         run: |
-          cd ANTs/build
+          cd build
           cmake --build . --config Release --parallel
-          cd ANTS-build
+
+      - name: Install ANTs
+        working-directory: ${{runner.temp}}
+        run: |
+          cd build/ANTS-build
           cmake --install .
-          cp -R ${{github.workspace}}/ANTs/source/Scripts ${{github.workspace}}/ANTs/install/
+          cp -R ${{runner.temp}}/source/Scripts ${{runner.temp}}/install/
 
       - name: Pack
         shell: bash
-        working-directory: ${{github.workspace}}
+        working-directory: ${{runner.temp}}
         run: |
-          cd ANTs/install/
-          zip -r ${{github.workspace}}/ANTs/ANTs_package_windows.zip .
+          cd install/
+          zip -r ${{runner.temp}}/ANTs_package_windows.zip .
 
       - name: Upload package
         uses: actions/upload-artifact@v2
         with:
           name: Package
-          path: ${{github.workspace}}/ANTs/ANTs*
+          path: ${{runner.temp}}/ANTs*
           if-no-files-found: error
 
       - name: Cleanup
         if: always()
         run: |
-          rm -rf ${{github.workspace}}/ANTs/
+          rm -rf ${{runner.temp}}
