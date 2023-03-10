@@ -1,0 +1,58 @@
+name: Build ANTs for Windows
+
+on:
+  # Allows to run the workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build packages
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      # Set up vs studio. Use default windows shell (powershell) not bash,
+      # to avoid conflicts with link executable
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ runner.arch }}
+          vsversion: "2019"
+
+    - name: Configure ANTs
+      run: |
+        cd ${{github.workspace}}
+        mkdir ANTs
+        cd ANTs
+        git clone https://github.com/ANTsX/ANTs.git source
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install ../source
+
+    - name: Build ANTs
+      run: |
+        cd ${{github.workspace}}
+        cd build
+        make -j4
+        cd ANTS-build
+        make install
+        cp -R ${{github.workspace}}/ANTs/source/Scripts ${{github.workspace}}/ANTs/install/
+
+    - name: Pack
+      shell: bash
+      working-directory: ${{github.workspace}}
+      run: |
+        cd ANTs/install/
+        zip -r ${{github.workspace}}/ANTs/ANTs_package_windows.zip .
+
+    - name: Upload package
+      uses: actions/upload-artifact@v2
+      with:
+        name: Package
+        path: ${{github.workspace}}/ANTs/ANTs*
+        if-no-files-found: error
+
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -rf ${{github.workspace}}/ANTs/
