@@ -27,15 +27,15 @@ jobs:
           git clone https://github.com/ANTsX/ANTs.git source
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install ../source
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install ../source
 
       - name: Build ANTs
+        working-directory: ${{github.workspace}}
         run: |
-          cd ${{github.workspace}}
           cd ANTs/build
-          make -j4
+          cmake --build . --config Release --parallel
           cd ANTS-build
-          make install
+          cmake --install .
           cp -R ${{github.workspace}}/ANTs/source/Scripts ${{github.workspace}}/ANTs/install/
 
       - name: Pack
