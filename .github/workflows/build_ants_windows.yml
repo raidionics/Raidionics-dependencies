@@ -49,11 +49,10 @@ jobs:
 
       - name: Pack
         uses: vimtor/action-zip@v1
-        working-directory: ${{runner.temp}}
         with:
-          files: install/
+          files: ${{runner.temp}}/install/
           recursive: true
-          dest: ANTs_package_windows_v2.zip
+          dest: ${{runner.temp}}/ANTs_package_windows_v2.zip
 
       - name: Upload package
         uses: actions/upload-artifact@v2
