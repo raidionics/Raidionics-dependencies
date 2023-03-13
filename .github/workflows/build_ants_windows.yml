@@ -41,18 +41,17 @@ jobs:
           cp -R ${{runner.temp}}/source/Scripts ${{runner.temp}}/install/
 
       - name: Pack
-        shell: bash
-        working-directory: ${{runner.temp}}
-        run: |
-          cd install/
-          7z a ${{runner.temp}}/ANTs_package_windows.zip .
-
-      - name: Pack
         uses: vimtor/action-zip@v1
         with:
           files: ${{runner.temp}}/install/
           recursive: true
-          dest: ${{runner.temp}}/ANTs_package_windows_v2.zip
+          dest: ${{runner.temp}}/ANTs_package_windows.zip
+
+      - name: Pack v2
+        shell: bash
+        working-directory: ${{runner.temp}}
+        run: |
+          7z a ANTs_package_windows_v2.zip install/
 
       - name: Upload package
         uses: actions/upload-artifact@v2
