@@ -45,7 +45,15 @@ jobs:
         working-directory: ${{runner.temp}}
         run: |
           cd install/
-          zip -r ${{runner.temp}}/ANTs_package_windows.zip .
+          7z a ${{runner.temp}}/ANTs_package_windows.zip .
+
+      - name: Pack
+        uses: vimtor/action-zip@v1
+        working-directory: ${{runner.temp}}
+        with:
+          files: install/
+          recursive: true
+          dest: ANTs_package_windows_v2.zip
 
       - name: Upload package
         uses: actions/upload-artifact@v2
@@ -57,4 +65,4 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          rm -rf ${{runner.temp}}
+          rm -r ${{runner.temp}}
