@@ -41,13 +41,6 @@ jobs:
           cp -R ${{runner.temp}}/source/Scripts ${{runner.temp}}/install/
 
       - name: Pack
-        uses: vimtor/action-zip@v1
-        with:
-          files: ${{runner.temp}}/install/
-          recursive: true
-          dest: ${{runner.temp}}/ANTs_package_windows.zip
-
-      - name: Pack v2
         shell: bash
         working-directory: ${{runner.temp}}
         run: |
@@ -59,8 +52,3 @@ jobs:
           name: Package
           path: ${{runner.temp}}/ANTs*
           if-no-files-found: error
-
-      - name: Cleanup
-        if: always()
-        run: |
-          rm -r ${{runner.temp}}
