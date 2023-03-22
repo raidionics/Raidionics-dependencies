@@ -7,17 +7,17 @@ on:
 jobs:
   build:
     name: Build packages
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
-#      # Set up vs studio. Use default windows shell (powershell) not bash,
-#      # to avoid conflicts with link executable
-#      - uses: ilammy/msvc-dev-cmd@v1
-#        with:
-#          arch: ${{ runner.arch }}
-#          vsversion: "2019"
+      # Set up vs studio. Use default windows shell (powershell) not bash,
+      # to avoid conflicts with link executable
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ runner.arch }}
+          vsversion: "2019"
 
       - name: Configure ANTs
         working-directory: ${{runner.temp}}
@@ -25,7 +25,7 @@ jobs:
           git clone https://github.com/ANTsX/ANTs.git source
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.temp}}/install -G "Visual Studio 14 2015 Win64" ../source
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.temp}}/install ../source
 
       - name: Build ANTs
         working-directory: ${{runner.temp}}
