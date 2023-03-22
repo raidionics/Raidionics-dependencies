@@ -36,8 +36,8 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
-        cd ANTs/install/
-        zip -r ${{github.workspace}}/ANTs/ANTs_package_macos.zip .
+        cd ANTs/
+        tar -czvf ${{github.workspace}}/ANTs/ANTs_package_macos.tar.gz install/
 
     - name: Upload package
       uses: actions/upload-artifact@v2
