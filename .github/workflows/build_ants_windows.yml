@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Build packages
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,7 +26,8 @@ jobs:
           mkdir build
           cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.temp}}/install ../source
-
+#-G "Visual Studio 14 2015 Win64" -A x64
+      
       - name: Build ANTs
         working-directory: ${{runner.temp}}
         run: |
