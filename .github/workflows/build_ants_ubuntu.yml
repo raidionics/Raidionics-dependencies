@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Build packages
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v1
 
@@ -41,7 +41,7 @@ jobs:
         tar -czvf ${{github.workspace}}/ANTs/ANTs_package_ubuntu.tar.gz install/
 
     - name: Upload package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Package
         path: ${{github.workspace}}/ANTs/ANTs*

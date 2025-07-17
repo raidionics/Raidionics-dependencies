@@ -7,9 +7,9 @@ on:
 jobs:
   build:
     name: Build packages
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
       # Set up vs studio. Use default windows shell (powershell) not bash,
@@ -17,7 +17,7 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ runner.arch }}
-          vsversion: "2019"
+          vsversion: "2022"
 
       - name: Configure ANTs
         working-directory: ${{runner.temp}}
@@ -48,7 +48,7 @@ jobs:
           7z a ANTs_package_windows.zip install/
 
       - name: Upload package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Package
           path: ${{runner.temp}}/ANTs*
