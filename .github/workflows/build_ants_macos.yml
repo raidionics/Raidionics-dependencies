@@ -4,12 +4,15 @@ on:
   # Allows to run the workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  MACOSX_DEPLOYMENT_TARGET: 10.15
+
 jobs:
   build:
     name: Build packages
-    runs-on: macos-10.15
+    runs-on: macos-13
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
     - name: Install cmake
       run: |
