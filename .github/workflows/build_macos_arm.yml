@@ -51,13 +51,13 @@ jobs:
     - name: Pack
       run: |
         cd ${{ github.workspace }}/ANTs
-        tar -czvf ANTs_package_macos_arm_${{ steps.version.outputs.version }}.tar.gz install/
+        tar -czvf ANTs_${{ steps.version.outputs.version }}_macos_arm.tar.gz install/
 
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
         name: ANTs-macos-arm-${{ steps.version.outputs.version }}
-        path: ${{ github.workspace }}/ANTs/ANTs_package_macos_arm_${{ steps.version.outputs.version }}.tar.gz
+        path: ${{ github.workspace }}/ANTs/ANTs_${{ steps.version.outputs.version }}_macos_arm.tar.gz
         if-no-files-found: error
 
     - name: Cleanup
