@@ -32,14 +32,14 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        cd build
+        cd ANTs/build
         cmake --build . --config Release --parallel
 
     - name: Install
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        cd build/ANTS-build
+        cd ANTs/build/ANTS-build
         cmake --install .
 
     - name: Get ANTs version

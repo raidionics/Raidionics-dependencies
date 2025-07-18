@@ -42,16 +42,18 @@ jobs:
           cp -R ${{runner.temp}}/source/Scripts ${{runner.temp}}/install/
 
       - name: Get ANTs version
-        id: version
         run: |
-          cd ANTs/source
-          echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+         $antsVersion="${{ env.ANTS_TAG }}"
+         $antsVersion=$antsVersion.Substring(1)
+         echo "ANTS_VERSION=$antsVersion" | Out-File -FilePath $env:GITHUB_ENV -Append
+        env:
+          ANTS_TAG: ${{ github.ref_name }}
 
       - name: Pack
         shell: bash
         working-directory: ${{runner.temp}}
         run: |
-          7z a ANTs_${{ steps.version.outputs.version }}_windows.zip install/
+          7z a ANTs_${{ env.ANTS_VERSION }}_windows.zip install/
 
       - name: Upload package
         uses: actions/upload-artifact@v4
