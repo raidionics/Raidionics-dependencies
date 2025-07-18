@@ -40,9 +40,9 @@ jobs:
       run: |
         mkdir install
         mkdir install/bin
-        cp -a ANTS-build/bin/* install/bin/
+        cp -a ANTS/build/bin/* install/bin/
         mkdir install/lib
-        cp -a ANTS-build/lib/* install/lib/
+        cp -a ANTS/build/lib/* install/lib/
         cp -R source/Scripts install/
 
     - name: Get ANTs version

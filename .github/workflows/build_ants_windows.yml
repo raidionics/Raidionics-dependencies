@@ -41,11 +41,17 @@ jobs:
           cmake --install .
           cp -R ${{runner.temp}}/source/Scripts ${{runner.temp}}/install/
 
+      - name: Get ANTs version
+        id: version
+        run: |
+          cd ANTs/source
+          echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+
       - name: Pack
         shell: bash
         working-directory: ${{runner.temp}}
         run: |
-          7z a ANTs_package_windows.zip install/
+          7z a ANTs_${{ steps.version.outputs.version }}_windows.zip install/
 
       - name: Upload package
         uses: actions/upload-artifact@v4

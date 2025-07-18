@@ -33,12 +33,18 @@ jobs:
         make install
         cp -R ${{github.workspace}}/ANTs/source/Scripts ${{github.workspace}}/ANTs/install/
 
+    - name: Get ANTs version
+      id: version
+      run: |
+        cd ANTs/source
+        echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+
     - name: Pack
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
         cd ANTs/
-        tar -czvf ${{github.workspace}}/ANTs/ANTs_package_ubuntu.tar.gz install/
+        tar -czvf ${{github.workspace}}/ANTs/ANTs_${{ steps.version.outputs.version }}_ubuntu.tar.gz install/
 
     - name: Upload package
       uses: actions/upload-artifact@v4
