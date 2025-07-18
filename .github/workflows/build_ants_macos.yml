@@ -1,4 +1,4 @@
-name: Build ANTs for macOS
+name: Build ANTs for macOS Intel
 
 on:
   # Allows to run the workflow manually from the Actions tab
@@ -9,7 +9,7 @@ env:
 
 jobs:
   build:
-    name: Build packages
+    name: Build ANTs (macOS Intel)
     runs-on: macos-13
     steps:
     - uses: actions/checkout@v4
@@ -35,17 +35,23 @@ jobs:
         make install
         cp -R ${{github.workspace}}/ANTs/source/Scripts ${{github.workspace}}/ANTs/install/
 
+    - name: Get ANTs version
+      id: version
+      run: |
+        cd ANTs/source
+        echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+
     - name: Pack
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
         cd ANTs/
-        tar -czvf ${{github.workspace}}/ANTs/ANTs_package_macos.tar.gz install/
+        tar -czvf ${{github.workspace}}/ANTs/ANTs_${{ steps.version.outputs.version }}_macos_x86_64.tar.gz install/
 
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
-        name: Package
+        name: ANTs_${{ steps.version.outputs.version }}_macos_x86_64
         path: ${{github.workspace}}/ANTs/ANTs*
         if-no-files-found: error
 

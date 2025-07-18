@@ -1,4 +1,4 @@
-name: Build ANTs for macOS ARM (Apple Silicon)
+name: Build ANTs for macOS ARM
 
 on:
   workflow_dispatch:
@@ -30,9 +30,13 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/ANTs/install \
           -DCMAKE_OSX_ARCHITECTURES=arm64 \
+          -DBUILD_INSTALL=ON \
+          -DBUILD_TESTING=OFF \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DBUILD_EXAMPLES=OFF \
           -G Ninja
-        ninja
-        ninja install
+        ninja -j4
+        ninja install || { echo "Install failed, copying manually..."; mkdir -p ../install/bin; cp -a ANTS-build/bin/* ../install/bin/; mkdir -p ../install/lib; cp -a ANTS-build/lib/* ../install/lib/}
         cp -R ../source/Scripts ../install/
 
     - name: Get ANTs version
