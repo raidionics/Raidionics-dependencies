@@ -20,7 +20,7 @@ jobs:
         cmake --version
         ninja --version
 
-    - name: Build ANTs
+    - name: Configure ANTs
       run: |
         cd ${{ github.workspace }}
         mkdir -p ANTs && cd ANTs
@@ -28,22 +28,26 @@ jobs:
         mkdir build && cd build
         cmake ../source \
           -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install
           -DCMAKE_OSX_ARCHITECTURES=arm64 \
           -DBUILD_TESTING=OFF \
           -DBUILD_SHARED_LIBS=OFF \
           -DBUILD_EXAMPLES=OFF \
           -G Ninja
-        ninja -j4
 
-    - name: Bundle ANTs
-      working-directory: ${{github.workspace}}
+    - name: Build
+      shell: bash
+      working-directory: ${{ runner.temp }}
       run: |
-        mkdir install
-        mkdir install/bin
-        cp -a ANTS/build/bin/* install/bin/
-        mkdir install/lib
-        cp -a ANTS/build/lib/* install/lib/
-        cp -R source/Scripts install/
+        cd build
+        cmake --build . --config Release --parallel
+
+    - name: Install
+      shell: bash
+      working-directory: ${{ runner.temp }}
+      run: |
+        cd build/ANTS-build
+        cmake --install .
 
     - name: Get ANTs version
       id: version
