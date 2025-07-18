@@ -28,16 +28,22 @@ jobs:
         mkdir build && cd build
         cmake ../source \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/ANTs/install \
           -DCMAKE_OSX_ARCHITECTURES=arm64 \
-          -DBUILD_INSTALL=ON \
           -DBUILD_TESTING=OFF \
           -DBUILD_SHARED_LIBS=OFF \
           -DBUILD_EXAMPLES=OFF \
           -G Ninja
         ninja -j4
-        ninja install || { echo "Install failed, copying manually..."; mkdir -p ../install/bin; cp -a ANTS-build/bin/* ../install/bin/; mkdir -p ../install/lib; cp -a ANTS-build/lib/* ../install/lib/}
-        cp -R ../source/Scripts ../install/
+
+    - name: Bundle ANTs
+      working-directory: ${{github.workspace}}
+      run: |
+        mkdir install
+        mkdir install/bin
+        cp -a ANTS-build/bin/* install/bin/
+        mkdir install/lib
+        cp -a ANTS-build/lib/* install/lib/
+        cp -R source/Scripts install/
 
     - name: Get ANTs version
       id: version
