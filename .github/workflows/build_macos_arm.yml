@@ -21,30 +21,23 @@ jobs:
         ninja --version
 
     - name: Configure ANTs
+      working-directory: ${{ github.workspace }}
       run: |
-        cd ${{ github.workspace }}
         mkdir -p ANTs && cd ANTs
         git clone https://github.com/ANTsX/ANTs.git source
         mkdir build && cd build
-        cmake ../source \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install
-          -DCMAKE_OSX_ARCHITECTURES=arm64 \
-          -DBUILD_TESTING=OFF \
-          -DBUILD_SHARED_LIBS=OFF \
-          -DBUILD_EXAMPLES=OFF \
-          -G Ninja
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/ANTs/install -G Ninja ../source
 
     - name: Build
       shell: bash
-      working-directory: ${{ runner.temp }}
+      working-directory: ${{ github.workspace }}
       run: |
         cd build
         cmake --build . --config Release --parallel
 
     - name: Install
       shell: bash
-      working-directory: ${{ runner.temp }}
+      working-directory: ${{ github.workspace }}
       run: |
         cd build/ANTS-build
         cmake --install .
